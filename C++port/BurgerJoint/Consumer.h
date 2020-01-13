@@ -1,12 +1,18 @@
 #pragma once
-
-class Consumer
+#include "BaseQueue.h"
+static void consumer()
 {
-public:
-	Consumer();
-	~Consumer();
-
-private:
-
-};
-
+	while (true)
+	{
+		std::unique_lock<std::mutex> cLock(mx);
+		cv.wait(cLock, [] {return burgerReady; });
+		while (!burgers.empty())
+		{
+			std::cout << "Eating delicious int burger no. " << burgers.front() << std::endl;
+			burgers.pop();
+			burgerReady = false;
+			
+		}
+	}
+	
+}
